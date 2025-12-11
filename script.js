@@ -1,5 +1,5 @@
 // fazer
-//tokenizer manual
+//tokenizer manual a
 
 let sentence = "";
 let stack = [];
