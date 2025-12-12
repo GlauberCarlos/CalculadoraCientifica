@@ -1,5 +1,5 @@
 // fazer
-//tokenizer manual a
+//ajustar tokenizer, teste manual com ordens erradas.
 
 let sentence = "";
 let stack = [];
@@ -55,24 +55,80 @@ function clearScreen (){
    console.log(stack);
 };
 
-// Algoritmo shunting yard
-// 
-// 
-
 function btnEqual (){
    stack = []
-   let tokens = tokenize(sentence); // simulacao - criar um array com cada item
+   let tokens = manualTokenizer(sentence); // simulacao - criar um array com cada item
    let rpn = shuntingYard(tokens); // criar 2 arrays output e operator; ordena os itens e coloca todos em output
    calcular(rpn);      
 };
 
+let expr = "1+2";
 
-function tokenize(expr) { //cria o array
-   //  return expr.match(/[+-]?\d+(?:\.\d+)?|\+|\-|\*|\//g); // inclui decimais e negativos
-    return expr.match(/\d+(?:\.\d+)?|\+|\-|\*|\//g); // inclui decimais
-   //  return expr.match(/\d+|\+|\-|\/|\*/g); // apenas inteiros
+function manualTokenizer(expr) { //cria o array
+   let tokenList = [];
+   let numberBuffer = "";
+
+   for (let i = 0; i < expr.length ; i++ ) {
+      let char = expr[i];
+
+      if (char == "*" || char == "/" || char == "^" || char == ")") {
+         if (i == 0 
+            || tokenList[tokenList.length - 1] == "+" 
+            || tokenList[tokenList.length - 1] == "-" 
+            || tokenList[tokenList.length - 1] == "/" 
+            || tokenList[tokenList.length - 1] == "(" 
+            || tokenList[tokenList.length - 1] == "^"
+            || tokenList[tokenList.length - 1] == "*"  ) {
+            console.log("operacao nao permitida");
+         }else {
+            if (numberBuffer.length > 0){
+               tokenList.push(numberBuffer);
+            }
+            tokenList.push(char);            
+         }
+      }
+      else if (char == "(") {
+         if (numberBuffer.length > 0){
+               tokenList.push(numberBuffer);
+         }
+         tokenList.push(char);
+      }
+      else if (char == "+" || char == "-" ){
+         if (tokenList[tokenList.length - 1] == "+" 
+            || tokenList[tokenList.length - 1] == "-" 
+            || tokenList[tokenList.length - 1] == "^" ) {
+            console.log("operacao nao permitida");
+         }else {
+            if (numberBuffer.length == 0){
+               numberBuffer += char;
+            }else{
+               tokenList.push(char);
+            }
+         }
+      }
+      else if (char == ".") {
+         if (numberBuffer.length == 0) {
+            numberBuffer = 0 + char;
+         }else {
+            if (numberBuffer.includes(".")){
+               console.log("operacao nao permitida");
+            }else {
+               numberBuffer += char;
+            }
+         }
+      }
+      else if (!isNaN(parseFloat(char)) && char !== " ") {
+         numberBuffer += char;
+      }    
+   }
+   if (numberBuffer.length > 0 ) {
+      tokenList.push(numberBuffer);
+      numberBuffer = "";
+   }
+
+   return tokenList;
+
 }
-// console.log(tokenize("1-12+3*4/8")); //teste do tokenize
 
 const peso = {
    "+":1,
