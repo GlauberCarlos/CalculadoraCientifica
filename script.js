@@ -1,5 +1,5 @@
 // fazer
-//ajustar tokenizer, teste manual com ordens erradas.
+
 
 let sentence = "";
 let stack = [];
@@ -9,9 +9,23 @@ let buttons = document.querySelectorAll(".btn");
 let operators = document.querySelectorAll(".btnOp");
 let reset = document.getElementById("reset").addEventListener("click", clearScreen);
 
+//tamanho fonte no screen
+function fontSize(size){
+   if (size <= 8){
+      screen.style.fontSize = "3.5rem"
+   }
+   else if (size > 15){
+      screen.style.fontSize = "1rem"
+   }
+   else if (size > 8){
+      screen.style.fontSize = "2rem"
+   }
+}
+
 buttons.forEach(btn => {
    btn.addEventListener("click", () => {
       const value = btn.getAttribute("data-value");
+      fontSize(screen.textContent.length)
 
       if (activeResult) {
          sentence = value;
@@ -30,6 +44,8 @@ buttons.forEach(btn => {
 operators.forEach(btn => {
    btn.addEventListener("click", () => {
       const valueOp = btn.getAttribute("data-value");
+      fontSize(screen.textContent.length)
+
       console.log(valueOp);
       if (valueOp == "="){
          if (activeResult){
@@ -53,16 +69,26 @@ function clearScreen (){
    sentence = "";
    stack.length = 0;
    console.log(stack);
+   fontSize(screen.textContent.length)
 };
+
+//teste manual 
+sentence = "8^2"
+btnEqual ()
 
 function btnEqual (){
    stack = []
    let tokens = manualTokenizer(sentence); // simulacao - criar um array com cada item
+   if(!tokens) {
+      console.log("Retornou erro na conta")
+      return      
+   }
    let rpn = shuntingYard(tokens); // criar 2 arrays output e operator; ordena os itens e coloca todos em output
    calcular(rpn);      
 };
 
-let expr = "1+2";
+// let expr = "(8-2)";
+// manualTokenizer(expr)
 
 function manualTokenizer(expr) { //cria o array
    let tokenList = [];
@@ -79,8 +105,13 @@ function manualTokenizer(expr) { //cria o array
             || tokenList[tokenList.length - 1] == "(" 
             || tokenList[tokenList.length - 1] == "^"
             || tokenList[tokenList.length - 1] == "*"  ) {
-            console.log("operacao nao permitida");
-         }else {
+            console.log("operacao nao permitida 1");            
+            return(null);
+         }else if (char == ")" && !isNaN(expr[i+1])){
+            tokenList.push(char);
+            tokenList.push("*");
+         }
+         else {
             if (numberBuffer.length > 0){
                tokenList.push(numberBuffer);
             }
@@ -88,8 +119,8 @@ function manualTokenizer(expr) { //cria o array
          }
       }
       else if (char == "(") {
-         if (numberBuffer.length > 0){
-               tokenList.push(numberBuffer);
+         if (numberBuffer.length == 0 && i!= 0){
+               tokenList.push("*");
          }
          tokenList.push(char);
       }
@@ -97,13 +128,17 @@ function manualTokenizer(expr) { //cria o array
          if (tokenList[tokenList.length - 1] == "+" 
             || tokenList[tokenList.length - 1] == "-" 
             || tokenList[tokenList.length - 1] == "^" ) {
-            console.log("operacao nao permitida");
-         }else {
-            if (numberBuffer.length == 0){
-               numberBuffer += char;
-            }else{
+            console.log("operacao nao permitida 2");
+            return(null);
+         }else if (numberBuffer.length == 0){
+            if (!isNaN(parseFloat(expr[i-1]))){
                tokenList.push(char);
+            }else{
+               numberBuffer += char;
             }
+         }else {            
+            tokenList.push(char);            
+            numberBuffer = "";
          }
       }
       else if (char == ".") {
@@ -111,14 +146,25 @@ function manualTokenizer(expr) { //cria o array
             numberBuffer = 0 + char;
          }else {
             if (numberBuffer.includes(".")){
-               console.log("operacao nao permitida");
+               console.log("operacao nao permitida 3");
+               return(null);
             }else {
                numberBuffer += char;
             }
          }
       }
-      else if (!isNaN(parseFloat(char)) && char !== " ") {
-         numberBuffer += char;
+      else if (!isNaN(parseFloat(char))) { 
+         if (isNaN(parseFloat(expr[i+1]))){
+            if (expr[i+1] == "."){
+               numberBuffer += char;
+            }else{
+               numberBuffer += char;
+               tokenList.push(numberBuffer);
+               numberBuffer = "";
+            }           
+         }else{
+            numberBuffer += char;
+         }
       }    
    }
    if (numberBuffer.length > 0 ) {
@@ -126,6 +172,7 @@ function manualTokenizer(expr) { //cria o array
       numberBuffer = "";
    }
 
+   console.log(tokenList);
    return tokenList;
 
 }
@@ -135,6 +182,7 @@ const peso = {
    "-":1,
    "*":2,
    "/":2,
+   "^":3
 }
 
 function shuntingYard(tokens) { //coloca o array em ordem polonesa
@@ -144,6 +192,9 @@ function shuntingYard(tokens) { //coloca o array em ordem polonesa
    tokens.forEach (token => {
       if(!isNaN(token)) { //se for número
          outputQueue.push(token);
+      }
+      else if (token ==="("){
+         operatorStack.push(token);
       }
       else { //se for operador, etc
          while (
@@ -164,7 +215,7 @@ function shuntingYard(tokens) { //coloca o array em ordem polonesa
 
 function calcular(rpn) { // faz a conta depois de ordenar
    // rpn.unshift("0")
-   console.log(rpn)
+   console.log("rpn " + rpn)
    rpn.forEach(token => {
       if(!isNaN(token)) { //se for número
          stack.push(Number(token));      }
@@ -177,6 +228,7 @@ function calcular(rpn) { // faz a conta depois de ordenar
             case "-": stack.push(a - b); break;
             case "*": stack.push(a * b); break;
             case "/": stack.push(a / b); break;            
+            case "^": stack.push(a ** b); break;            
          }
       }
    });
@@ -185,5 +237,6 @@ function calcular(rpn) { // faz a conta depois de ordenar
    sentence = stack[0];
    console.log(sentence);
    activeResult = true;
+   fontSize(screen.textContent.length)
    return stack[0];
 }
