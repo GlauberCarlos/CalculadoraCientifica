@@ -1,5 +1,4 @@
 // fazer
-// corrigir conta undefined (1+2
 
 let sentence = "";
 let stack = [];
@@ -7,6 +6,7 @@ let activeResult = false;
 let screen = document.querySelector(".screen");
 let buttons = document.querySelectorAll(".btn");
 let operators = document.querySelectorAll(".btnOp");
+let backspace = document.querySelector(".btnBack");
 let reset = document.getElementById("reset").addEventListener("click", clearScreen);
 
 const peso = {
@@ -30,18 +30,31 @@ function fontSize(size){
    }
 }
 
+backspace.addEventListener("click", () => {
+   if (activeResult){
+      sentence = screen.textContent;
+      activeResult = false;
+   }
+   sentence = sentence.slice(0,-1);
+   screen.textContent = sentence;
+})
+
 buttons.forEach(btn => {
    btn.addEventListener("click", () => {
       const value = btn.getAttribute("data-value");
       fontSize(screen.textContent.length)
 
-      if (activeResult) {
+      if (activeResult && value != ".") {
          sentence = value;
          screen.textContent = sentence.replace(/\*/g,"x").replace(/\//g,"÷");
          console.log(sentence); 
          activeResult = false;
-      }
-      else{
+      }else if (value == "."){         
+         activeResult = false;
+         sentence = screen.textContent;
+         sentence += value;
+         screen.textContent = sentence;
+      }else{
          sentence += value;
          screen.textContent = sentence.replace(/\*/g,"x").replace(/\//g,"÷");
          console.log(sentence);      
@@ -90,12 +103,14 @@ function btnEqual (){
    if(!tokens) {
       console.log("Retornou erro na conta")
       screen.textContent = "Erro";
+      sentence = "";
       return      
    }
    let rpn = shuntingYard(tokens); // criar 2 arrays output e operator; ordena os itens e coloca todos em output
    if(!rpn) {
       console.log("Retornou erro na conta")
       screen.textContent = "Erro";
+      sentence = "";
       return      
    }
    calcular(rpn);      

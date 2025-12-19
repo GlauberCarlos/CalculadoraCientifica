@@ -1,21 +1,23 @@
 
 .calc-border {
+   margin: 2rem;
    width: 20rem;
    background-color: #474747;
    padding: 0.2rem;
-   border-radius: 5px;
+   border-radius: 12px;
 }
 
 .calc-body {
    padding: 0.6rem;
-   border: #727272 1px solid;
-   border-radius: 5px;
+   border: #575757 5px solid;
+   border-radius: 10px;
 }
 
 .screen {
    box-sizing: border-box;
    height: 7rem;
-   background-color: #e6e6e6;
+   background-color: #f8f8f8;
+   color: #302a4e;
    border: #000000 1px solid;
    border-radius: 5px;
    margin-bottom: 0.5rem;
