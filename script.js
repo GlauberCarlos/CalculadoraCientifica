@@ -37,13 +37,13 @@ buttons.forEach(btn => {
 
       if (activeResult) {
          sentence = value;
-         screen.textContent = sentence;
+         screen.textContent = sentence.replace(/\*/g,"x").replace(/\//g,"÷");
          console.log(sentence); 
          activeResult = false;
       }
       else{
          sentence += value;
-         screen.textContent = sentence;
+         screen.textContent = sentence.replace(/\*/g,"x").replace(/\//g,"÷");
          console.log(sentence);      
       }
    })
@@ -66,7 +66,7 @@ operators.forEach(btn => {
       else {
          sentence += valueOp;
          console.log(sentence);
-         screen.textContent = sentence;
+         screen.textContent = sentence.replace(/\*/g,"x").replace(/\//g,"÷");
          activeResult = false;
       }
    })
