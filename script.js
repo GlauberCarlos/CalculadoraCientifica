@@ -1,5 +1,5 @@
 // fazer
-
+// corrigir conta undefined (1+2
 
 let sentence = "";
 let stack = [];
@@ -8,6 +8,14 @@ let screen = document.querySelector(".screen");
 let buttons = document.querySelectorAll(".btn");
 let operators = document.querySelectorAll(".btnOp");
 let reset = document.getElementById("reset").addEventListener("click", clearScreen);
+
+const peso = {
+   "+":1,
+   "-":1,
+   "*":2,
+   "/":2,
+   "^":3
+}
 
 //tamanho fonte no screen
 function fontSize(size){
@@ -73,17 +81,23 @@ function clearScreen (){
 };
 
 //teste manual 
-sentence = "8^2"
-btnEqual ()
+// sentence = "(3+2"
+// btnEqual ()
 
 function btnEqual (){
    stack = []
    let tokens = manualTokenizer(sentence); // simulacao - criar um array com cada item
    if(!tokens) {
       console.log("Retornou erro na conta")
+      screen.textContent = "Erro";
       return      
    }
    let rpn = shuntingYard(tokens); // criar 2 arrays output e operator; ordena os itens e coloca todos em output
+   if(!rpn) {
+      console.log("Retornou erro na conta")
+      screen.textContent = "Erro";
+      return      
+   }
    calcular(rpn);      
 };
 
@@ -96,15 +110,16 @@ function manualTokenizer(expr) { //cria o array
 
    for (let i = 0; i < expr.length ; i++ ) {
       let char = expr[i];
+      let prev = tokenList[tokenList.length - 1];
 
       if (char == "*" || char == "/" || char == "^" || char == ")") {
          if (i == 0 
-            || tokenList[tokenList.length - 1] == "+" 
-            || tokenList[tokenList.length - 1] == "-" 
-            || tokenList[tokenList.length - 1] == "/" 
-            || tokenList[tokenList.length - 1] == "(" 
-            || tokenList[tokenList.length - 1] == "^"
-            || tokenList[tokenList.length - 1] == "*"  ) {
+            || prev == "+" 
+            || prev == "-" 
+            || prev == "/" 
+            || prev == "(" 
+            || prev == "^"
+            || prev == "*"  ) {
             console.log("operacao nao permitida 1");            
             return(null);
          }else if (char == ")" && !isNaN(expr[i+1])){
@@ -119,19 +134,31 @@ function manualTokenizer(expr) { //cria o array
          }
       }
       else if (char == "(") {
-         if (numberBuffer.length == 0 && i!= 0){
+         if (
+            prev !== undefined &&
+            prev !== "+" &&
+            prev !== "-" &&
+            prev !== "*" &&
+            prev !== "/" &&
+            prev !== "^" &&
+            prev !== "("
+
+         ){
                tokenList.push("*");
          }
          tokenList.push(char);
       }
       else if (char == "+" || char == "-" ){
-         if (tokenList[tokenList.length - 1] == "+" 
-            || tokenList[tokenList.length - 1] == "-" 
-            || tokenList[tokenList.length - 1] == "^" ) {
+         if (prev == "+" 
+            || prev == "-" 
+            || prev == "^" ) {
             console.log("operacao nao permitida 2");
             return(null);
          }else if (numberBuffer.length == 0){
             if (!isNaN(parseFloat(expr[i-1]))){
+               tokenList.push(char);
+            }else if(expr[i+1] == "("){
+               tokenList.push("0");
                tokenList.push(char);
             }else{
                numberBuffer += char;
@@ -177,17 +204,11 @@ function manualTokenizer(expr) { //cria o array
 
 }
 
-const peso = {
-   "+":1,
-   "-":1,
-   "*":2,
-   "/":2,
-   "^":3
-}
 
 function shuntingYard(tokens) { //coloca o array em ordem polonesa
    const outputQueue = [];
    const operatorStack = [];
+   let error = false;
 
    tokens.forEach (token => {
       if(!isNaN(token)) { //se for número
@@ -196,15 +217,33 @@ function shuntingYard(tokens) { //coloca o array em ordem polonesa
       else if (token ==="("){
          operatorStack.push(token);
       }
+      else if (token ===")"){
+         if (!operatorStack.includes("(")){
+            error = true;
+            return (null);
+         }
+         while (operatorStack.at(-1) != "(") {
+            outputQueue.push(operatorStack.pop());
+         }
+         operatorStack.pop();
+      }
       else { //se for operador, etc
          while (
-            operatorStack.length > 0 && peso[operatorStack.at(-1)] >= peso[token]){
+            operatorStack.length > 0 
+            && peso[operatorStack.at(-1)] >= peso[token] 
+            && token != "^"){
                outputQueue.push(operatorStack.pop()); // o operador que já estava na fila vai para o output
          }
          operatorStack.push(token); // o operador recem chegado vai para o output
       }
    });
 
+   if (error) return null;
+   
+   if (operatorStack.includes("(")){
+      return (null);
+   }
+   
    while (operatorStack.length > 0) {
       outputQueue.push(operatorStack.pop());
    }
