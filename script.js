@@ -1,4 +1,4 @@
-// fazer
+// fazer historico
 
 let sentence = "";
 let stack = [];
@@ -8,6 +8,12 @@ let buttons = document.querySelectorAll(".btn");
 let operators = document.querySelectorAll(".btnOp");
 let backspace = document.querySelector(".btnBack");
 let reset = document.getElementById("reset").addEventListener("click", clearScreen);
+
+let history = [];
+let histAS
+let histAR
+let histSent = document.querySelectorAll(".hist-sent");
+let histRes = document.querySelectorAll(".hist-res");
 
 const peso = {
    "+":1,
@@ -51,9 +57,9 @@ buttons.forEach(btn => {
          activeResult = false;
       }else if (value == "."){         
          activeResult = false;
-         sentence = screen.textContent;
+         sentence = screen.textContent.replace(/x/g,"*").replace(/÷/g,"/");
          sentence += value;
-         screen.textContent = sentence;
+         screen.textContent = sentence.replace(/\*/g,"x").replace(/\//g,"÷");
       }else{
          sentence += value;
          screen.textContent = sentence.replace(/\*/g,"x").replace(/\//g,"÷");
@@ -93,10 +99,6 @@ function clearScreen (){
    fontSize(screen.textContent.length)
 };
 
-//teste manual 
-// sentence = "(3+2"
-// btnEqual ()
-
 function btnEqual (){
    stack = []
    let tokens = manualTokenizer(sentence); // simulacao - criar um array com cada item
@@ -113,11 +115,8 @@ function btnEqual (){
       sentence = "";
       return      
    }
-   calcular(rpn);      
+   calcular(rpn);   
 };
-
-// let expr = "(8-2)";
-// manualTokenizer(expr)
 
 function manualTokenizer(expr) { //cria o array
    let tokenList = [];
@@ -268,12 +267,11 @@ function shuntingYard(tokens) { //coloca o array em ordem polonesa
 }
 
 function calcular(rpn) { // faz a conta depois de ordenar
-   // rpn.unshift("0")
    console.log("rpn " + rpn)
    rpn.forEach(token => {
       if(!isNaN(token)) { //se for número
-         stack.push(Number(token));      }
-      else {
+         stack.push(Number(token));      
+      }else {
          let b = stack.pop();
          let a = stack.pop();         
 
@@ -287,10 +285,37 @@ function calcular(rpn) { // faz a conta depois de ordenar
       }
    });
 
-   screen.textContent = stack[0];
-   sentence = stack[0];
+   histAS = screen.textContent; // para ir pro histórico
+   histAR = Math.round(stack[0] * 10000) / 10000; // math round para cortar o monte de decimais
+ 
+   screen.textContent = Math.round(stack[0] * 10000) / 10000;
+   sentence = Math.round(stack[0] * 10000) / 10000;
    console.log(sentence);
    activeResult = true;
-   fontSize(screen.textContent.length)
-   return stack[0];
+   fontSize(screen.textContent.length);
+   putHistory();
+   
+   return Math.round(stack[0] * 10000) / 10000;
+   // return stack[0];
+}
+
+function putHistory () {
+   if (history.length > 9) history.pop();
+   history.unshift({histAS, histAR})
+   console.log(history)
+
+   histSent.forEach((el, i) => {
+      if (history[i]){
+         el.textContent = history[i].histAS;
+      } else {
+         el.textContent = ""
+      }
+   })
+   histRes.forEach((el, i) => {
+      if (history[i]){
+         el.textContent = history[i].histAR;
+      } else {
+         el.textContent = ""
+      }
+   })
 }

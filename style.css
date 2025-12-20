@@ -1,16 +1,37 @@
+@font-face {
+   font-family: "Digital";
+   src: url(fonts/digital-7.ttf);
+}
+@font-face {
+   font-family: "Digital-i";
+   src: url(fonts/digital-7-i.ttf);
+}
 
 .calc-border {
+   box-sizing: border-box;
+   display: flex;
    margin: 2rem;
-   width: 20rem;
+   width: 40rem;
    background-color: #474747;
    padding: 0.2rem;
    border-radius: 12px;
 }
 
 .calc-body {
+   box-sizing: border-box;
    padding: 0.6rem;
+   width: 50%;
    border: #575757 5px solid;
    border-radius: 10px;
+}
+
+.historic {
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   box-sizing: border-box;
+   width: 50%;
+   margin-bottom: 1rem;
 }
 
 .screen {
@@ -24,6 +45,8 @@
    text-align: end;
    align-content: end;
    padding: 1rem;
+
+   font-family: Digital, sans-serif;
 
    word-wrap: break-word;
    font-size: 3.5rem;
@@ -89,4 +112,48 @@ button {
 #comma {
    display: flex;
    justify-content: center;
+}
+
+#hist-title {
+   text-align: center;
+   color: #e6e6e6;
+   font-family: Digital, sans-serif;
+   font-size: 2rem;
+   margin: 0.5rem 0 0;
+}
+
+#historic-numbers {
+   display: flex;
+}
+
+#historic-sentence,
+#historic-result {
+   box-sizing: border-box;
+   border-radius: 5px;
+   background-color: #e6e6e6;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   text-align: center;
+   padding: 10px 5px;
+
+   font-family: Georgia, serif;
+   font-size: 1.2rem;
+}
+
+#historic-sentence {
+   width: 65%;
+   margin: 5px 0 0 10px;
+}
+
+#historic-result {
+   width: 35%;
+   margin: 5px 15px 0 5px;
+}
+
+.hist-sent, .hist-res {
+   height: 2.5rem;
+   align-content: center;
+   border-bottom:#b8b8b8 1px solid;
+   font-family: Digital-i, sans-serif;
 }
