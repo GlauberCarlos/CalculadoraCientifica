@@ -14,7 +14,7 @@ let histAR
 let histSent = document.querySelectorAll(".hist-sent");
 let histRes = document.querySelectorAll(".hist-res");
 
-screen.addEventListener("click", () => {
+document.querySelector(".history-icon").addEventListener("click", () => {
    document.querySelector(".historic").classList.toggle("historic-show");
    document.querySelector(".calc-body").classList.toggle("calc-body-show");
 })
