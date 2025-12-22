@@ -19,13 +19,14 @@
    width: 20rem;
    height: 33rem;
    background-color: #474747;
-   border: #575757 3px solid;
-   border-radius: 10px;
+   border: #575757 3px solid;   
 }
 
 .calc-body {
    position: relative;
    box-sizing: border-box;
+   border-radius: 10px;
+   transition: border-radius 0.5s ease;
    z-index: 1;
 }
 
@@ -37,15 +38,22 @@
    justify-content: space-between;
    box-sizing: border-box;
    z-index: -1;
+   border-radius: 10px;
    transform: translate(0,0);
-   transition: transform 0.5s ease;
+   transition: transform 0.5s ease, border-radius 0.5s ease;
 }
 
-.historic-hide {
-   transform: translate(100%,0);
+.historic-show {
+   transform: translate(99%,0);
+   border-radius: 0 10px 10px 0;
+}
+
+.calc-body-show {
+   border-radius: 10px 0 0 10px;
 }
 
 .screen {
+   position: relative;
    box-sizing: border-box;
    height: 7rem;
    background-color: #f8f8f8;
@@ -62,6 +70,23 @@
    word-wrap: break-word;
    font-size: 3.5rem;
 }
+
+.history-icon {
+   display: flex;
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   /* border: red 1px solid; */
+}
+
+.history-icon img{
+   height: 20px;
+}
+
+.history-icon img:hover{
+   filter: invert(0.5);
+}
+
 
 .keyboard>* {
    min-height: 3.5rem;
@@ -170,7 +195,11 @@ button {
 }
 
 @media (max-width: 680px){
-   .historic-hide {
-   transform: translate(0,100%);
-}
+   .historic-show {
+      transform: translate(0,99%);
+      border-radius: 0 0 10px 10px;
+   }
+   .calc-body-show {
+      border-radius: 10px 10px 0 0;
+   }
 }
