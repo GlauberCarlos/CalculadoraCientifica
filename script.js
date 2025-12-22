@@ -1,4 +1,3 @@
-// fazer historico
 
 let sentence = "";
 let stack = [];
@@ -14,6 +13,10 @@ let histAS
 let histAR
 let histSent = document.querySelectorAll(".hist-sent");
 let histRes = document.querySelectorAll(".hist-res");
+
+screen.addEventListener("click", () => {
+   document.querySelector(".historic").classList.toggle("historic-hide")
+})
 
 const peso = {
    "+":1,

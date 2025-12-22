@@ -7,31 +7,42 @@
    src: url(fonts/digital-7-i.ttf);
 }
 
-.calc-border {
+.calc-space {
+   position: relative;
    box-sizing: border-box;
    display: flex;
-   margin: 2rem;
-   width: 40rem;
-   background-color: #474747;
-   padding: 0.2rem;
-   border-radius: 12px;
+   gap: 2px;
 }
 
-.calc-body {
-   box-sizing: border-box;
+.calc-body, .historic {
    padding: 0.6rem;
-   width: 50%;
-   border: #575757 5px solid;
+   width: 20rem;
+   height: 33rem;
+   background-color: #474747;
+   border: #575757 3px solid;
    border-radius: 10px;
 }
 
+.calc-body {
+   position: relative;
+   box-sizing: border-box;
+   z-index: 1;
+}
+
 .historic {
+   position: absolute;
+   left: 0;
    display: flex;
    flex-direction: column;
    justify-content: space-between;
    box-sizing: border-box;
-   width: 50%;
-   margin-bottom: 1rem;
+   z-index: -1;
+   transform: translate(0,0);
+   transition: transform 0.5s ease;
+}
+
+.historic-hide {
+   transform: translate(100%,0);
 }
 
 .screen {
@@ -119,7 +130,7 @@ button {
    color: #e6e6e6;
    font-family: Digital, sans-serif;
    font-size: 2rem;
-   margin: 0.5rem 0 0;
+   margin: 0.2rem 0 0;
 }
 
 #historic-numbers {
@@ -143,12 +154,12 @@ button {
 
 #historic-sentence {
    width: 65%;
-   margin: 5px 0 0 10px;
+   margin: 5px 0 0;
 }
 
 #historic-result {
    width: 35%;
-   margin: 5px 15px 0 5px;
+   margin: 5px 0 0 5px;
 }
 
 .hist-sent, .hist-res {
@@ -156,4 +167,10 @@ button {
    align-content: center;
    border-bottom:#b8b8b8 1px solid;
    font-family: Digital-i, sans-serif;
+}
+
+@media (max-width: 680px){
+   .historic-hide {
+   transform: translate(0,100%);
+}
 }
