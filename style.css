@@ -155,9 +155,17 @@ button {
 #hist-title {
    text-align: center;
    color: #e6e6e6;
-   font-family: Digital, sans-serif;
-   font-size: 2rem;
-   margin: 0.2rem 0 0;
+   font-family: Georgia, serif;
+   font-size: 1.4rem;
+   text-transform: uppercase;
+   margin: 0.1rem 0 0;
+}
+
+#hist-title p{
+   font-family: sans-serif;
+   font-size: 0.7rem;
+   text-transform: lowercase;
+   margin: 0.1rem 0 0;
 }
 
 #historic-numbers {
@@ -176,7 +184,8 @@ button {
    padding: 10px 5px;
 
    font-family: Georgia, serif;
-   font-size: 1.2rem;
+   font-size: 1rem;
+   text-transform: uppercase;
 }
 
 #historic-sentence {
@@ -198,8 +207,18 @@ button {
    font-family: sans-serif;
    white-space: nowrap;
    overflow: auto;
+   cursor: grab;
    /* text-overflow: ellipsis; */
 }
+.hist-sent:hover, .hist-res:hover {
+   background-color: #dadada;
+}
+
+.hist-sent:active, .hist-res:active {   
+   color: #af8dfd;
+   cursor: grabbing;
+}
+
 
 @media (max-width: 680px){
    .historic-show {

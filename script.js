@@ -14,12 +14,12 @@ let histAR
 let histSent = document.querySelectorAll(".hist-sent");
 let histRes = document.querySelectorAll(".hist-res");
 
-document.querySelector(".history-icon").addEventListener("click", () => {
+document.querySelector(".history-icon").addEventListener("click", () => { // mostra e oculta o historico
    document.querySelector(".historic").classList.toggle("historic-show");
    document.querySelector(".calc-body").classList.toggle("calc-body-show");
 })
 
-const peso = {
+const peso = { // define prioridade do operador no shunting
    "+":1,
    "-":1,
    "*":2,
@@ -27,8 +27,7 @@ const peso = {
    "^":3
 }
 
-//tamanho fonte no screen
-function fontSize(size){
+function fontSize(size){ //tamanho fonte no screen
    if (size <= 8){
       screen.style.fontSize = "3.5rem"
    }
@@ -40,16 +39,16 @@ function fontSize(size){
    }
 }
 
-backspace.addEventListener("click", () => {
+backspace.addEventListener("click", () => { // apagar caracter no screen
    if (activeResult){
       sentence = screen.textContent;
       activeResult = false;
    }
    sentence = sentence.slice(0,-1);
-   screen.textContent = sentence;
+   screen.textContent = sentence.replace(/\*/g,"x").replace(/\//g,"÷");
 })
 
-buttons.forEach(btn => {
+buttons.forEach(btn => { // captura os numeros, virgula e parenteses
    btn.addEventListener("click", () => {
       const value = btn.getAttribute("data-value");
       fontSize(screen.textContent.length)
@@ -72,7 +71,7 @@ buttons.forEach(btn => {
    })
 });
 
-operators.forEach(btn => {
+operators.forEach(btn => { // captura os operadores
    btn.addEventListener("click", () => {
       const valueOp = btn.getAttribute("data-value");
       fontSize(screen.textContent.length)
@@ -95,7 +94,7 @@ operators.forEach(btn => {
    })
 });
 
-function clearScreen (){
+function clearScreen (){ // limpa a tela toda "C"
    screen.textContent = "0";
    sentence = "";
    stack.length = 0;
@@ -103,7 +102,7 @@ function clearScreen (){
    fontSize(screen.textContent.length)
 };
 
-function btnEqual (){
+function btnEqual (){ // executa os calculos
    stack = []
    let tokens = manualTokenizer(sentence); // simulacao - criar um array com cada item
    if(!tokens) {
@@ -122,7 +121,7 @@ function btnEqual (){
    calcular(rpn);   
 };
 
-function manualTokenizer(expr) { //cria o array
+function manualTokenizer(expr) { // cria o array
    let tokenList = [];
    let numberBuffer = "";
 
@@ -222,7 +221,6 @@ function manualTokenizer(expr) { //cria o array
 
 }
 
-
 function shuntingYard(tokens) { //coloca o array em ordem polonesa
    const outputQueue = [];
    const operatorStack = [];
@@ -303,7 +301,7 @@ function calcular(rpn) { // faz a conta depois de ordenar
    // return stack[0];
 }
 
-function putHistory () {
+function putHistory () { // coloca o historico na tabela ao lado
    if (history.length > 9) history.pop();
    history.unshift({histAS, histAR})
    console.log(history)
@@ -323,3 +321,31 @@ function putHistory () {
       }
    })
 }
+
+// copia o historico para o screen
+document.getElementById("historic-sentence").addEventListener("click", (e) => { 
+   if (e.target.classList.contains("hist-sent")) {
+      if (e.target.textContent.trim() === "") {
+         return
+      } else {
+         screen.textContent = e.target.innerText;
+         sentence = screen.textContent.replace(/x/g,"*").replace(/÷/g,"/");
+         console.log(sentence);
+         activeResult = false;
+      }
+   }
+});
+
+document.getElementById("historic-result").addEventListener("click", (e) => {
+   if (e.target.classList.contains("hist-res")) {
+      if (e.target.textContent.trim() === ""){
+         return
+      } else {
+         screen.textContent = e.target.innerText;
+         sentence = screen.textContent.replace(/x/g,"*").replace(/÷/g,"/");
+         console.log(sentence);
+         activeResult = false;
+      }
+   }
+});
+
