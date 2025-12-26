@@ -221,6 +221,14 @@ button {
 
 
 @media (max-width: 680px){
+   .calc-space {
+      justify-content: center;
+      width: 95%;
+      margin: 1rem auto;
+   }
+   .calc-body, .historic{
+      width: 100%;
+   }
    .historic-show {
       transform: translate(0,99%);
       border-radius: 0 0 10px 10px;
